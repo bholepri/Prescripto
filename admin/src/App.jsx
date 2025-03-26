@@ -11,7 +11,7 @@ import AllAppointments from './pages/Admin/AllAppointments';
 import AddDoctor from './pages/Admin/AddDoctor';
 import DoctorsList from './pages/Admin/DoctorsList';
 import { DoctorContext } from './context/DoctorContext';
-import DoctorDashboard from './pages/Doctor/doctorDashboard';
+import DoctorDashboard from './pages/Doctor/DoctorDashboard';
 import DoctorAppointments from './pages/Doctor/DoctorAppointments';
 import DoctorProfile from './pages/Doctor/doctorProfile';
 
