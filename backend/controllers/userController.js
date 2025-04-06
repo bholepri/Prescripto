@@ -72,6 +72,7 @@ const getProfile = async (req, res) => {
   try {
     const { userId } = req.body;
     const userData = await userModel.findById(userId).select("-password");
+    
     res.json({ success: true, userData });
   } catch (error) {
     console.log(error);
@@ -113,6 +114,50 @@ const updateProfile = async (req, res) => {
     res.json({ success: false, message: error.message });
   }
 };
+
+
+//API to save user records
+const saveRecords = async (req, res) => {
+  try {
+    const { userId } = req.body;
+    const record = req.file;
+    
+
+    if (!record) {
+      return res.json({ success: false, message: "No file found" });
+    }
+    const fileURL = record.path; // CloudinaryStorage puts the Cloudinary URL here
+    const imageUplod = await cloudinary.uploader.upload(record.path, {
+      resource_type: "image",
+    });
+    //Save file URL to the user's records array
+    await userModel.findByIdAndUpdate(userId, {
+      $push: { records: fileURL },
+    });
+    res.json({ success: true, message: "File Uploaded" });
+  } catch (error) {
+    console.log(error);
+    res.json({ success: false, message: error.message });
+  }
+}
+
+//API to get user records
+const getRecords=async(req,res)=>{
+  try {
+    const { userId } = req.body;
+    const userData = await userModel.findById(userId).select("records -_id");
+    
+
+    if (!userData) {
+      return res.json({ success: false, message: "No records found" });
+    }
+
+    res.json({ success: true, records: userData.records });
+  } catch (error) {
+    console.log(error);
+    res.json({ success: false, message: error.message });
+  }
+}
 
 //API to book appointment
 const bookAppointment = async (req, res) => {
@@ -269,14 +314,17 @@ const verifyRazorpay = async (req, res) => {
   }
 };
 
+
 export {
   registerUser,
   loginUser,
   getProfile,
   updateProfile,
+  saveRecords,
   bookAppointment,
   listAppointment,
   cancelAppointments,
   paymentRazorpay,
   verifyRazorpay,
+  getRecords
 };

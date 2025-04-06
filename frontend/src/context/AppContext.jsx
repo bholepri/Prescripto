@@ -9,6 +9,7 @@ const AppContextProvider=(props)=>{
     const currencySymbol='$'
     const backendUrl = import.meta.env.VITE_BACKEND_URL
     const [doctors,setDoctors]=useState([])
+    const [records,setRecords]=useState([])
     const [token ,setToken] = useState(localStorage.getItem('token') ? localStorage.getItem('token') : false)
     const [userData,setUserData] =useState(false)
     
@@ -44,15 +45,48 @@ const AppContextProvider=(props)=>{
         }
     }
 
+    const saveRecords = async ()=>{
+        try {
+
+            const {data} = await axios.get(backendUrl + '/api/user/save-records',{headers:{token}})
+            if(data.success){
+                setUserData(data.userData)
+            }else{
+                toast.error(data.message)
+            }
+
+        } catch (error) {
+            console.log(error)
+            toast.error(error.message)
+        }
+    }
+
+    const getRecords =async ()=>{
+        try {
+            const {data} = await axios.get(backendUrl + '/api/user/get-records',{headers:{token}})
+           
+            if(data.success){
+                setRecords(data.records)
+            }else{
+                toast.error(data.message)
+            }
+        } catch (error) {
+            console.log(error)
+            toast.error(error.message)
+        }
+    }
+
     const value ={
         doctors ,getDoctorsData,
         currencySymbol,token,setToken,
         backendUrl,userData,setUserData,
-        loadUserProfileData
+        loadUserProfileData,saveRecords,
+        records,setRecords,getRecords
     }
 
     useEffect(()=>{
-        getDoctorsData()
+        getDoctorsData(),
+        getRecords()
     },[])
 
     useEffect(()=>{

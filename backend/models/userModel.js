@@ -36,7 +36,11 @@ const userSchema = new mongoose.Schema({
     phone:{
         type:String,
         default:'0000000000'
-    }
+    },
+    records: {
+        type: [String], 
+        default: []
+      }
 })
 
 const userModel=mongoose.models.user || mongoose.model('user',userSchema)
