@@ -1,5 +1,5 @@
 import express from 'express'
-import { getProfile, loginUser, registerUser , updateProfile ,bookAppointment ,listAppointment ,cancelAppointments,paymentRazorpay,verifyRazorpay, saveRecords,getRecords } from '../controllers/userController.js'
+import { getProfile, loginUser, registerUser , updateProfile ,bookAppointment ,listAppointment ,cancelAppointments,paymentRazorpay,verifyRazorpay, saveRecords,getRecords ,addReview,allReview} from '../controllers/userController.js'
 import authUser from '../middlewares/authUser.js'
 // import upload from '../middlewares/multer.js'
 import {upload} from '../config/cloudinary.js'
@@ -22,6 +22,9 @@ userRouter.post('/cancel-appointment',authUser,cancelAppointments)
 
 userRouter.post('/payment-razorpay',authUser,paymentRazorpay)
 userRouter.post('/verify-razorpay',authUser,verifyRazorpay)
+
+userRouter.post('/add-review',authUser,addReview)
+userRouter.get('/all-review',authUser,allReview)
 
 
 

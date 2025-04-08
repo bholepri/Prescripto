@@ -5,10 +5,18 @@ import { useNavigate, useParams } from "react-router-dom";
 import RelatedDoctors from "../components/RelatedDoctors";
 import { toast } from "react-toastify";
 import axios from "axios";
+import { Filter, Star } from "lucide-react";
 
 const Appointment = () => {
-  const { doctors, currencySymbol, backendUrl, token, getDoctorsData } =
-    useContext(AppContext);
+  const {
+    doctors,
+    currencySymbol,
+    backendUrl,
+    token,
+    getDoctorsData,
+    userData,
+    getReviewsData
+  } = useContext(AppContext);
   const { docId } = useParams();
   const daysOfWeek = ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"];
 
@@ -18,6 +26,10 @@ const Appointment = () => {
   const [docSlots, setDocSlots] = useState([]);
   const [slotIndex, setSlotIndex] = useState(0);
   const [slotTime, setSlotTime] = useState("");
+
+  const [rating, setRating] = useState(0);
+
+  const [reviewData, setReviewData] = useState([]);
 
   const fetchDocInfo = async () => {
     const docInfo = doctors.find((doc) => doc._id === docId);
@@ -121,6 +133,25 @@ const Appointment = () => {
     }
   };
 
+  const allReview = async () => {
+    const { data } = await axios.get(backendUrl + "/api/user/all-review", {
+      headers: { token },
+    });
+    //  console.log(data.reviews)
+    const allReviews = data.reviews;
+    const doctorName = docInfo.name;
+
+    const filteredReviews = allReviews.filter(
+      (review) => review.docData === doctorName
+    );
+
+    setReviewData(filteredReviews);
+  };
+
+  useEffect(() => {
+    allReview();
+  });
+
   useEffect(() => {
     fetchDocInfo();
   }, [doctors, docId]);
@@ -129,9 +160,7 @@ const Appointment = () => {
     getAvailableSlots();
   }, [docInfo]);
 
-  useEffect(() => {
-    console.log(docSlots);
-  }, [docSlots]);
+  useEffect(() => {}, [docSlots]);
 
   return (
     docInfo && (
@@ -216,6 +245,59 @@ const Appointment = () => {
           </div>
         </div>
         <RelatedDoctors docId={docId} speciality={docInfo.speciality} />
+
+        {/* reviews */}
+        <hr className="mt-5" />
+        <p className="text-3xl  font-medium text-gray-900 text-center mt-10 mb-10">
+          Reviews
+        </p>
+        {reviewData.length === 0 
+        ? <p>No Reviews Found</p>
+        : <div className="flex flex-col flex-wrap sm:flex-row gap-8 ml-4 ">
+        {reviewData.map((item, index) => (
+          <div
+            key={index}
+            className=" border rounded-xl p-8 shadow-sm bg-white hover:shadow-md transition hover:scale-105"
+          >
+            <div className="flex gap-4 mb-4 p-2 ">
+              <img
+                className="w-12 h-12 rounded-3xl"
+                src={userData.image}
+                alt=""
+              />
+              <h3 className="text-lg font-semibold text-gray-800 flex items-center">
+                {userData.name}
+              </h3>
+            </div>
+
+            <div className="flex">
+              {[...Array(5)].map((_, i) => (
+                <Star
+                  key={i}
+                  size={18}
+                  className={
+                    i < item.rating ? "text-yellow-400" : "text-gray-300"
+                  }
+                  fill={i < item.rating ? "#facc15" : "none"}
+                />
+              ))}
+            </div>
+
+            <p className="w-40 text-gray-700 mt-3 text-sm">{item.review}</p>
+
+            <span className="mt-2 flex justify-end text-sm text-gray-500">
+              {new Date(item.date).toLocaleDateString("en-US", {
+                day: "2-digit",
+                month: "short",
+                year: "numeric",
+              })}
+            </span>
+          </div>
+        ))}
+      </div>
+        
+        }
+        
       </div>
     )
   );

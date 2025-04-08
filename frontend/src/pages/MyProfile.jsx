@@ -18,7 +18,6 @@ const MyProfile = () => {
   const [image, setImage] = useState(false);
   const [file, setFile] = useState(null);
   
-
   const updateUserProfileData = async () => {
     try {
       const formData = new FormData();
@@ -256,20 +255,24 @@ const MyProfile = () => {
           </div>
           <div>
             <p className="mb-5 mt-10 font-medium text-3xl text-neutral-800 ">Medical History:</p>
-            <div className=" mt-5">
-              {[...(userData.records || [])].reverse().slice(0,5).map((item, index) => (
-                <div id="record"
-                  key={index}
-                  className="border border-gray-300 rounded-lg p-3  items-center mb-5 mt-5 flex gap-3 justify-around"
-                >
-                  <p className="text-gray-500">{index + 1}</p>
-                  <img className="w-24 h-24 object-cover" src={item} alt="" />
-                  <a href={item} download className="text-blue-500 hover:border hover:p-2 hover:border-gray-300 hover:rounded-lg hover:bg-gray-100">
-                    View
-                  </a>
-                </div>
-              ))}
-            </div>
+            {userData.records.length === 0 
+            ? <p className="text-gray-500">No records found.</p>
+            : <div className=" mt-5">
+            {[...(userData.records || [])].reverse().slice(0,5).map((item, index) => (
+              <div id="record"
+                key={index}
+                className="border border-gray-300 rounded-lg p-3  items-center mb-5 mt-5 flex gap-3 justify-around"
+              >
+                <p className="text-gray-500">{index + 1}</p>
+                <img className="w-24 h-12 object-cover" src={item} alt="" />
+                <a href={item} download className="text-blue-500 hover:border hover:p-2 hover:border-gray-300 hover:rounded-lg hover:bg-gray-100">
+                  View
+                </a>
+              </div>
+            ))}
+          </div>
+            }
+            
           </div>
         </div>
       </div>

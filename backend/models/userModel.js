@@ -39,7 +39,8 @@ const userSchema = new mongoose.Schema({
     },
     records: {
         type: [String], 
-        default: []
+        default: [],
+        
       }
 })
 

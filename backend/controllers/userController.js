@@ -6,6 +6,7 @@ import { v2 as cloudinary } from "cloudinary";
 import doctorModel from "../models/doctorModel.js";
 import appointmentModel from "../models/appointmentModel.js";
 import razorpay from "razorpay";
+import reviewModel from "../models/reviewModel.js";
 
 //API to register user
 const registerUser = async (req, res) => {
@@ -72,7 +73,7 @@ const getProfile = async (req, res) => {
   try {
     const { userId } = req.body;
     const userData = await userModel.findById(userId).select("-password");
-    
+
     res.json({ success: true, userData });
   } catch (error) {
     console.log(error);
@@ -115,13 +116,11 @@ const updateProfile = async (req, res) => {
   }
 };
 
-
 //API to save user records
 const saveRecords = async (req, res) => {
   try {
     const { userId } = req.body;
     const record = req.file;
-    
 
     if (!record) {
       return res.json({ success: false, message: "No file found" });
@@ -139,14 +138,13 @@ const saveRecords = async (req, res) => {
     console.log(error);
     res.json({ success: false, message: error.message });
   }
-}
+};
 
 //API to get user records
-const getRecords=async(req,res)=>{
+const getRecords = async (req, res) => {
   try {
     const { userId } = req.body;
     const userData = await userModel.findById(userId).select("records -_id");
-    
 
     if (!userData) {
       return res.json({ success: false, message: "No records found" });
@@ -157,7 +155,7 @@ const getRecords=async(req,res)=>{
     console.log(error);
     res.json({ success: false, message: error.message });
   }
-}
+};
 
 //API to book appointment
 const bookAppointment = async (req, res) => {
@@ -314,6 +312,49 @@ const verifyRazorpay = async (req, res) => {
   }
 };
 
+//API to add review
+const addReview = async (req, res) => {
+  try {
+    const {docData,userData,rating,review} = req.body;
+
+    const update = await appointmentModel.findByIdAndUpdate(req.body.id,{isAdded:true})
+    
+    const reviewData={
+      docData,
+      userData,
+      rating,
+      review
+    }
+
+    if (!docData || !userData || !rating || !review) {
+      return res.json({ success: false, message: "Missing details" });
+    }
+
+    const newReview = new reviewModel(reviewData);
+    const addreview = await newReview.save();
+    
+
+    res.json({ success: true, message: "Review Added" });
+  } catch (error) {
+    console.log(error);
+    res.json({ success: false, message: error.message });
+  }
+};
+
+//API to get all reviews
+const allReview=async(req,res)=>{
+  try {
+    const reviews = await reviewModel.find({}).populate('docData');
+   
+    if (!reviews) {
+      return res.json({ success: false, message: "No reviews found" });
+    }
+    res.json({ success: true, reviews });
+  } catch (error) {
+    console.log(error);
+    res.json({ success: false, message: error.message });
+  }
+}
 
 export {
   registerUser,
@@ -326,5 +367,7 @@ export {
   cancelAppointments,
   paymentRazorpay,
   verifyRazorpay,
-  getRecords
+  getRecords,
+  addReview,
+  allReview
 };

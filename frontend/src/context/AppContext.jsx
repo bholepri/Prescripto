@@ -12,6 +12,8 @@ const AppContextProvider=(props)=>{
     const [records,setRecords]=useState([])
     const [token ,setToken] = useState(localStorage.getItem('token') ? localStorage.getItem('token') : false)
     const [userData,setUserData] =useState(false)
+    const [reviews ,setReviews] = useState([])
+    const [appointments ,setAppointments] = useState([])
     
 
     const getDoctorsData = async ()=>{
@@ -76,17 +78,53 @@ const AppContextProvider=(props)=>{
         }
     }
 
+    const getReviewsData = async ()=>{
+        try {
+            const {data} =await axios.get(backendUrl + '/api/user/all-review')
+            // console.log(data)
+            if(data.success){
+                setReviews(data.reviews)
+            }else{
+                toast.error(data.message)
+            }
+        } catch (error) {
+            console.log(error)
+            toast.error(error.message)
+        }
+    }
+    const getAppointmentsData = async ()=>{
+        try {
+            const {data} =await axios.get(backendUrl + '/api/admin/appointments')
+            
+            if(data.success){
+                setAppointments(data.appointments)
+                // console.log(appointments)
+            }else{
+                toast.error(data.message)
+            }
+        } catch (error) {
+            console.log(error)
+            toast.error(error.message)
+        }
+    }
+    
     const value ={
         doctors ,getDoctorsData,
         currencySymbol,token,setToken,
         backendUrl,userData,setUserData,
         loadUserProfileData,saveRecords,
-        records,setRecords,getRecords
+        records,setRecords,getRecords,
+        reviews,setReviews,
+        getReviewsData,
+        appointments,setAppointments,
+        getAppointmentsData
     }
 
     useEffect(()=>{
         getDoctorsData(),
-        getRecords()
+        getRecords(),
+        getReviewsData(),
+        getAppointmentsData()
     },[])
 
     useEffect(()=>{
