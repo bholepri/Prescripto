@@ -1,7 +1,8 @@
 # Prescripto 🩺
 
-Prescripto is a full-stack web application built with the MERN stack (MongoDB, Express.js, React.js, and Node.js) that enables doctors to create, manage, and share digital prescriptions efficiently.
-The goal is to offer a modern, paperless solution for prescription management with secure access for both doctors and patients.
+Prescripto is a full-stack web application built with the MERN stack (MongoDB, Express.js, React.js, and Node.js) that includes features like Appointment Booking
+,Cancellation ,Time Slot Selection , Profile Management , Doctor Availability Management , Payment
+Integration, Deployment. Implemented three-level authentication for Patients, Doctors, and Admins.
 
 ## 🔗 Live Demo
 
