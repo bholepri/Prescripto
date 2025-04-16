@@ -69,12 +69,9 @@ const AppContextProvider=(props)=>{
            
             if(data.success){
                 setRecords(data.records)
-            }else{
-                toast.error(data.message)
             }
         } catch (error) {
             console.log(error)
-            toast.error(error.message)
         }
     }
 
@@ -84,12 +81,9 @@ const AppContextProvider=(props)=>{
             // console.log(data)
             if(data.success){
                 setReviews(data.reviews)
-            }else{
-                toast.error(data.message)
             }
         } catch (error) {
             console.log(error)
-            toast.error(error.message)
         }
     }
     const getAppointmentsData = async ()=>{
